@@ -1,4 +1,5 @@
-﻿using System;
+﻿using mesoft.gridview.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,7 +11,26 @@ namespace mesoft.gridview.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            var model = new CustomersViewModel()
+            {
+                Customers = null,
+                PagingInfo = new PagingInfo()
+                {
+                    CurrentPage=1,
+                    ItemsPerPage= 10,
+                    PageOptions = new List<int>() { 10,25, 50, 100},
+                    ShowPageOptions= true,
+                    TotalItems=1
+                }
+            };
+            return View(model);
+        }
+
+        public ActionResult GetCustomers(PagingInfo PagingData)
+        {
+            var db = new MyDbContext();
+            var model = GridViewModelProvider.GetCustomersViewModel(db, PagingData);
+            return PartialView("_CustomersPartial", model);
         }
 
         public ActionResult About()

@@ -1,0 +1,64 @@
+﻿@model mesoft.gridview.Models.CustomersViewModel
+
+@*Write Returned Data details here*@
+@Html.Hidden("gridview-data-details", Model.JsonPagingInfo)
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr class="gridview-list-header">
+            <th>
+                @(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().Id))
+            </th>
+            <th class="sortable" data-sort="CompanyName">
+                @(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().CompanyName))
+            </th>
+            <th class="sortable" data-sort="ContactTitle">
+                @(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().ContactTitle))
+            </th>
+            <th>
+                @(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().Country))
+            </th>
+            <th>
+                @(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().City))
+            </th>
+            <th>
+                @(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().Address))
+            </th>
+            <th>
+                @(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().Phone))
+            </th>
+        </tr>
+    </thead>
+
+    <tbody id="CustomersTable" class="gridview-list-items">
+        @if (Model.Customers.Count() > 0)
+        {
+            foreach (var c in Model.Customers)
+            {
+                <tr>
+                    <td class="value">@c.Id</td>
+                    <td class="value">@c.CompanyName</td>
+                    <td class="value">@c.ContactTitle</td>
+                    <td class="value">@c.Country</td>
+                    <td class="value">@c.City</td>
+                    <td class="Description">@c.Address</td>
+                    <td class="value">@c.Phone</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7">
+                    <div class="alert alert-warning alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <strong>Warning!</strong> No Customers Found!
+                    </div>
+                </td>
+            </tr>
+        }
+
+        @Html.Raw(ViewBag.Script)
+    </tbody>
+
+</table>

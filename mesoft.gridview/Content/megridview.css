@@ -7,13 +7,17 @@
 
 .gridview {
     /*border: 1px solid #ddd;*/
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
     border-radius: 4px;
 }
 
     .gridview .gridview-header {
         border-bottom: 1px solid #ddd;
+        -webkit-border-top-right-radius: 4px;
         border-top-right-radius: 4px;
-        border-top-left-radius: 4px;
+        -webkit-border-top-left-radius: 4px;
+        border-top-left-radius: 4px;       
     }
 
     .gridview .gridview-header, .gridview .gridview-footer {
@@ -29,7 +33,9 @@
 
     .gridview .gridview-footer {
         /*border-top: 1px solid #ddd;*/
+        -webkit-border-bottom-right-radius: 4px;
         border-bottom-right-radius: 4px;
+        -webkit-border-bottom-left-radius: 4px;
         border-bottom-left-radius: 4px;
     }
 
@@ -131,7 +137,7 @@ width: 55px;
     padding: 5px;
 }
 
-.gridview .gridview-list-header td.sortable:hover, .gridview .gridview-list-header td.sortable.sorted {
+.gridview .gridview-list-header th.sortable:hover, .gridview .gridview-list-header th.sortable.sorted {
 background: #F1F1F1;
 cursor: pointer;
 background-color: #f1f1f1;
@@ -144,17 +150,16 @@ background-repeat: repeat-x;
 filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff9f9f9', endColorstr='#ffe5e5e5', GradientType=0);
 }
 
-.gridview .gridview-list-header td:first-child, .gridview .gridview-list-items td:first-child {
+.gridview .gridview-list-header th:first-child, .gridview .gridview-list-items td:first-child {
 border-left: none;
 }
-.gridview .gridview-list-header td {
+.gridview .gridview-list-header th {
 font-weight: bold;
 }
-.gridview .gridview-list-header td, .gridview .gridview-list-items td {
+.gridview .gridview-list-header th, .gridview .gridview-list-items td {
 border-bottom: 1px solid #ddd;
 border-left: 1px solid #ddd;
 border-top: none;
-text-align: center;
 }
 
 .gridview img {

@@ -1,4 +1,6 @@
-﻿@{
+﻿@model mesoft.gridview.Models.CustomersViewModel
+
+@{
     ViewBag.Title = "Home Page";
 }
 
@@ -8,6 +10,7 @@
     <p><a href="#" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
 </div>
 
+<!-- GRIDVIEW Area-->
 <div class="row">
-    
+    @Html.Partial("_GridViewPartial")    
 </div>

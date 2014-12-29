@@ -1,0 +1,47 @@
+﻿@model mesoft.gridview.Models.CustomersViewModel
+
+<!-- GRIDVIEW-->
+<div class="gridview">
+    <!-- GridView Header-->
+    <div class="gridview-header">
+        <!-- GridView Header LEFT-->
+        <div class="col-sm-6">
+            <div class="gridview-search">
+                <div class="search input-group">
+                    <input class="form-control" placeholder="Search" type="search">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">
+                            <span class="fa fa-search"></span>
+                            <span class="sr-only">Search</span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <!-- /GridView Header LEFT-->
+        <!-- GridView Header Right-->
+        <div class="col-sm-6 text-right">
+            <!-- ADD ANY FILTERING ACTIONS HERE-->
+        </div>
+        <!-- /GridView Header Right-->
+    </div>
+    <!-- /End Of GridView Header-->
+    <!-- GridView ViewPort-->
+    <div class="gridview-viewport" id="viewport"
+         data-getdata-function="@Url.Action("GetCustomers", "Home")"
+         data-default-pagesize="10">
+        <div class="gridview-canvas" style="min-height:400px;">
+            @*Data Will Load Here*@
+        </div>
+        <div class="loading gridview gridview-loader">
+            <img src="~/content/images/loading.gif" />
+        </div>
+    </div>
+    <!-- /GridView ViewPort-->
+    <!-- GridView Paging Area-->
+    <div class="gridview-footer">
+        @Html.DisplayFor(x => x.PagingInfo, "Pager")
+    </div>
+    <!-- /GridView Paging Area-->
+</div>
+<!-- /END OF GRIDVIEW-->

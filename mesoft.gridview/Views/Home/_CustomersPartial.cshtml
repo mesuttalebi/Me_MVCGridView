@@ -1,7 +1,7 @@
 ﻿@model mesoft.gridview.Models.CustomersViewModel
 
 @*Write Returned Data details here*@
-@Html.Hidden("gridview-data-details", Model.JsonPagingInfo)
+<span class="gridview-data-details" style="display:none;">@Html.Raw(Model.JsonPagingInfo)</span>
 
 <table class="table table-bordered table-striped">
     <thead>

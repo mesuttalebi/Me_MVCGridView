@@ -5,7 +5,7 @@
 }
 
 <div class="jumbotron">
-    <h1>MeSoft Gridview V1.0</h1>
+    <h1>MeSoft Gridview V0.2</h1>
     <p class="lead">No Magic! Simple To Use, Simple to Develop</p>
     <p><a href="#" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
 </div>
@@ -14,3 +14,11 @@
 <div class="row">
     @Html.Partial("_GridViewPartial")    
 </div>
+
+@section Scripts {
+    <script>
+        $('.gridview1').meGridView();
+        //$('.gridview2').meGridView();
+    </script>
+    
+}

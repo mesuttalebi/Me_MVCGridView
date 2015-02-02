@@ -1,259 +1,269 @@
 ﻿/*
-    megridview v0.1
+    megridview v0.2
     Developed By Mesut Talebi (mesut.talebi@yahoo.com)
     Open Source And no licence :) free to use 
 */
+(function ($) {   
+    $.fn.meGridView = function () {
 
-var $gridviewObject = new Object();
+        var $gridviewObject = new Object();
 
-$(function () {
-    // Get First Page
-    LoadFirstPage();
+        return this.each(function () {
 
-    //Btn gridview-next click event
-    $(document).on('click', '.gridview button.gridview-next', function () {
-        var currentPage = $gridviewObject.CurrentPage;
-        var pageSize = $gridviewObject.ItemsPerPage;
+            //The gridview object that we are working on it
+            var gridview = this;
+           
+            // Get First Page
+            LoadFirstPage(gridview);
 
-        if ($('.gridview button.gridview-next').is(':enabled')) {
-            NextPage(currentPage, pageSize);
+            //Btn gridview-next click event
+            $(gridview).on('click', 'button.gridview-next', function () {
+                var currentPage = $gridviewObject.CurrentPage;
+                var pageSize = $gridviewObject.ItemsPerPage;
+
+                if ($('button.gridview-next', gridview).is(':enabled')) {
+                    NextPage(currentPage, pageSize, gridview);
+                }
+            });
+
+            //Btn gridview-prev click event
+            $(gridview).on('click', 'button.gridview-prev', function () {
+                var currentPage = $gridviewObject.CurrentPage;
+                var pageSize = $gridviewObject.ItemsPerPage;
+
+                if ($('button.gridview-prev', gridview).is(':enabled')) {
+                    PreviousPage(currentPage, pageSize, gridview);
+                }
+            });
+
+            //Change PageSize
+            $(gridview).on('click', 'div.gridview-itemization ul.dropdown-menu li a', function () {
+                var $li = $(this).parent();
+
+                var size = $($li).data('value');
+                var pageSize = $gridviewObject.ItemsPerPage;
+                if (size != pageSize)
+                    ChangePageSize(size, gridview);
+
+                event.preventDefault();
+            });
+
+            //Pressing Enter event for page number input
+            $(gridview).on('keypress', 'input[type=number].gridview-secondaryPaging', function (e) {
+                var key = e.which;
+                if (key == 13) {
+                    var pageSize = $gridviewObject.ItemsPerPage;
+                    var totalRecords = $gridviewObject.TotalItems;
+                    var lastPage = Math.ceil(totalRecords / pageSize);
+
+                    var page = parseInt($(this).val());
+
+                    if (page < 1)
+                        page = 1;
+                    if (page > lastPage)
+                        page = lastPage;
+
+                    GotoPage(page, pageSize, gridview);
+                }
+            });
+
+            //Searching data
+            $(gridview).on('click', '.search button', function () {
+                var $searchTerm = $('.search input[type=search]', gridview).val();
+
+                if ($searchTerm.length >= 0) {
+                    LoadData(1, 10,gridview, $searchTerm);
+                }
+            })
+
+            //Sorting Data
+            $(gridview).on('click', 'th.sortable', function () {
+
+                var $sortSpan = $(this).find('span');
+                var $sortObject = $gridviewObject.Sort;
+
+                if ($sortObject != null && $sortObject.Direction == 1) {
+                    $sortSpan.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+
+                    //Sort Descending            
+                    SortData($(this).data('sort'), 'Descending', gridview);
+                }
+                else {
+                    $sortSpan.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                    //sort Ascending
+                    SortData($(this).data('sort'), 'Ascending', gridview);
+                }
+            });            
+        });
+
+
+
+        function Init(obj) {
+            //add icon place holder for sortable fields
+            $('th.sortable', obj).append('<span class="pull-right fa"></span>');
+
+            var gridObject = $('.gridview-data-details', obj).html();
+            $gridviewObject = JSON.parse(gridObject);
         }
-    });
 
-    //Btn gridview-prev click event
-    $(document).on('click', '.gridview button.gridview-prev', function () {
-        var currentPage = $gridviewObject.CurrentPage;
-        var pageSize = $gridviewObject.ItemsPerPage;
+        function LoadFirstPage(obj) {
+            var $defaultPageSize = $('.gridview-viewport', obj).data('default-pagesize');
 
-        if ($('.gridview button.gridview-prev').is(':enabled')) {
-            PreviousPage(currentPage, pageSize);
+            LoadData(1, $defaultPageSize, obj);
         }
-    });
 
-    //Change PageSize
-    $(document).on('click', '.gridview div.gridview-itemization ul.dropdown-menu li a', function () {
-        var $li = $(this).parent();
+        function LoadData(page, pageSize, obj, searchTerm, sortObject) {
+            //Start Loading
+            ShowLoader(obj);
 
-        var size = $($li).data('value');
-        var pageSize = $gridviewObject.ItemsPerPage;
-        if (size != pageSize)
-            ChangePageSize(size);
+            var $getDataUrl = $('.gridview-viewport', obj).data('getdata-function');
 
-        event.preventDefault();
-    });
+            //retrieving search term
+            if (searchTerm == undefined) {
+                searchTerm = $('.search input[type=search]', obj).val();
+            }
 
-    //Pressing Enter event for page number input
-    $(document).on('keypress', '.gridview input[type=number].gridview-secondaryPaging', function (e) {
-        var key = e.which;
-        if (key == 13) {
-            var pageSize = $gridviewObject.ItemsPerPage;
+            //retrieving sort object
+            if (sortObject == undefined) {
+                //try to get sort object from gridviewObject
+                sortObject = $gridviewObject.Sort;
+            }
+
+            var data = { "CurrentPage": page, "ItemsPerPage": pageSize, "SearchTerm": searchTerm };
+
+            if (sortObject != undefined) {
+                data.Sort = sortObject;
+            }
+
+            $.ajax({
+                url: $getDataUrl,
+                type: 'post',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(data),
+                success: function (data) {
+                    UpdateGridView(data, obj);
+                },
+                complete: function () {
+                    HideLoader(obj);
+                }
+            });
+        }
+
+        function ShowLoader(obj) {
+            $('.gridview-canvas table', obj).hide();
+            $('.gridview-loader', obj).show();
+        }
+
+        function HideLoader(obj) {
+            $('.gridview-loader', obj).hide();
+            $('.gridview-canvas table', obj).show();
+        }
+
+        function UpdateGridView(data, obj) {
+            //Set Table Inner
+            $('#viewport .gridview-canvas', obj).html(data);
+            //Initialize gridview
+            Init(obj);
+
             var totalRecords = $gridviewObject.TotalItems;
+            var currentPage = $gridviewObject.CurrentPage;
+            var pageSize = $gridviewObject.ItemsPerPage;
+
+            //Set Showing records    
+            var showingStart = (currentPage - 1) * pageSize + 1;
+            var showingEnd = currentPage * pageSize;
+            if (showingEnd > totalRecords)
+                showingEnd = totalRecords;
+
+            $('span.gridview-start', obj).html(showingStart);
+            $('span.gridview-end', obj).html(showingEnd);
+
+            //Set Total Items Available
+            $('span.gridview-count', obj).html(totalRecords);
+
+            //Set Current Page
+            $('input[type=number].gridview-secondaryPaging', obj).val(currentPage);
+
+            //Set PageSize
+            $('span.selected-label', obj).html(pageSize);
+
+            //Set Btn Gridview pages count (span.gridview-pages)
+
+
             var lastPage = Math.ceil(totalRecords / pageSize);
 
-            var page = parseInt($(this).val());
+            //Update Total Pages 
+            $('div.gridview-pagination span.gridview-pages', obj).html(lastPage);
 
-            if (page < 1)
-                page = 1;
-            if (page > lastPage)
-                page = lastPage;
+            //Set Btn gridview-next and btn gridview-prev enabled
+            if (lastPage <= 1) {
+                $('button.gridview-next', obj).attr('disabled', 'disabled');
+                $('button.gridview-prev', obj).attr('disabled', 'disabled');
+            }
+            else if (currentPage == lastPage) {
+                $('button.gridview-next', obj).attr('disabled', 'disabled');
+                $('button.gridview-prev', obj).removeAttr('disabled');
+            }
+            else if (currentPage > 1) {
+                $('button.gridview-next', obj).removeAttr('disabled');
+                $('button.gridview-prev', obj).removeAttr('disabled');
+            }
+            else if (currentPage == 1) {
+                $('button.gridview-next', obj).removeAttr('disabled');
+                $('button.gridview-prev', obj).attr('disabled', 'disabled');
+            }
 
-            GotoPage(page, pageSize);
+
+            //Update sorted columns
+            if ($gridviewObject.Sort != null) {
+                //clear all previous sorting
+                $('th.sortable', obj).removeClass('sorted');
+                $('th.sortable > span', obj).removeClass('fa-chevron-up').removeClass('fa-chevron-down');
+
+                //find sorted column
+                var sortableTh = $('th.sortable[data-sort=' + $gridviewObject.Sort.SortColumn + ']', obj);
+                console.log(sortableTh);
+
+                $(sortableTh).addClass('sorted');
+                var $sortSpan = $(sortableTh).find('span');
+
+                if ($gridviewObject.Sort.Direction == 1) {
+                    $sortSpan.addClass('fa-chevron-up');
+                }
+                else if ($gridviewObject.Sort.Direction == 2) {
+                    $sortSpan.addClass('fa-chevron-down');
+                }
+            }
         }
-    });
 
-    //Searching data
-    $(document).on('click', '.gridview .search button', function () {
-        var $searchTerm = $('.gridview .search input[type=search]').val();
-
-        if ($searchTerm.length >= 0) {
-            LoadData(1, 10, $searchTerm);
+        function NextPage(currentPage, pageSize, obj) {
+            //Check For Last Page
+            var page = parseInt(currentPage) + 1;
+            LoadData(page, pageSize, obj);
         }
-    })
 
-    //Sorting Data
-    $(document).on('click', '.gridview th.sortable', function () {
-
-        var $sortSpan = $(this).find('span');
-        var $sortObject = $gridviewObject.Sort;
-
-        if ($sortObject != null && $sortObject.Direction == 1) {
-            $sortSpan.removeClass('fa-chevron-up').addClass('fa-chevron-down');
-
-            //Sort Descending            
-            SortData($(this).data('sort'), 'Descending');
+        function PreviousPage(currentPage, pageSize, obj) {
+            //Check For First Page
+            var page = parseInt(currentPage) + 1;
+            LoadData(currentPage - 1, pageSize, obj);
         }
-        else {
-            $sortSpan.removeClass('fa-chevron-down').addClass('fa-chevron-up');
-            //sort Ascending
-            SortData($(this).data('sort'), 'Ascending');
+
+        function GotoPage(page, pageSize, obj) {
+            //Check For Correct Page Number
+            LoadData(page, pageSize, obj);
         }
-    });
-});
 
-function Init() {
-    //add icon place holder for sortable fields
-    $('.gridview th.sortable').append('<span class="pull-right fa"></span>');
-
-    var gridObject = $('#gridview-data-details').val();
-    $gridviewObject = JSON.parse(gridObject);
-}
-
-function LoadFirstPage() {
-    var $defaultPageSize = $('#viewport').data('default-pagesize');
-
-    LoadData(1, $defaultPageSize);
-}
-
-function LoadData(page, pageSize, searchTerm, sortObject) {
-    //Start Loading
-    ShowLoader();
-
-    var $getDataUrl = $('#viewport').data('getdata-function');
-
-    //retrieving search term
-    if (searchTerm == undefined) {
-        searchTerm = $('.gridview .search input[type=search]').val();
-    }
-
-    //retrieving sort object
-    if (sortObject == undefined) {
-        //try to get sort object from gridviewObject
-        sortObject = $gridviewObject.Sort;
-    }
-
-    var data = { "CurrentPage": page, "ItemsPerPage": pageSize, "SearchTerm": searchTerm };
-
-    if (sortObject != undefined) {
-        data.Sort = sortObject;
-    }
-
-    $.ajax({
-        url: $getDataUrl,
-        type: 'post',
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(data),
-        success: function (data) {
-            UpdateGridView(data);
-        },
-        complete: function () {
-            HideLoader();
+        function ChangePageSize(pageSize, obj) {
+            LoadData(1, pageSize, obj);
         }
-    });
-}
 
-function ShowLoader() {
-    $('.gridview .gridview-canvas table').hide();
-    $('.gridview.gridview-loader').show();
-}
+        function SortData(column, direction, obj) {
+            var SortObject = { "SortColumn": column, "Direction": direction };
 
-function HideLoader() {
-    $('.gridview.gridview-loader').hide();
-    $('.gridview .gridview-canvas table').show();
-}
+            var $pageSize = $gridviewObject.ItemsPerPage; // $('#gridview-data-details span.PageSize').html();
+            var $searchTerm = $gridviewObject.searchTerm; // $('.gridview .search input[type=search]').val();
 
-function UpdateGridView(data) {
-    //Set Table Inner
-    $('#viewport .gridview-canvas').html(data);
-    //Initialize gridview
-    Init();
-
-    var totalRecords = $gridviewObject.TotalItems;//$('#gridview-data-details span.TotalRecords').html();
-    var currentPage = $gridviewObject.CurrentPage;//$('#gridview-data-details span.CurrentPage').html();
-    var pageSize = $gridviewObject.ItemsPerPage;//$('#gridview-data-details span.PageSize').html();
-
-
-    //Set Showing records    
-    var showingStart = (currentPage - 1) * pageSize + 1;
-    var showingEnd = currentPage * pageSize;
-    if (showingEnd > totalRecords)
-        showingEnd = totalRecords;
-
-    $('.gridview span.gridview-start').html(showingStart);
-    $('.gridview span.gridview-end').html(showingEnd);
-
-    //Set Total Items Available
-    $('.gridview span.gridview-count').html(totalRecords);
-
-    //Set Current Page
-    $('.gridview input[type=number].gridview-secondaryPaging').val(currentPage);
-
-    //Set PageSize
-    $('.gridview span.selected-label').html(pageSize);
-
-    //Set Btn Gridview pages count (span.gridview-pages)
-
-
-    var lastPage = Math.ceil(totalRecords / pageSize);
-
-    //Update Total Pages 
-    $('.gridview div.gridview-pagination span.gridview-pages').html(lastPage);
-
-    //Set Btn gridview-next and btn gridview-prev enabled
-    if (lastPage <= 1) {
-        $('.gridview button.gridview-next').attr('disabled', 'disabled');
-        $('.gridview button.gridview-prev').attr('disabled', 'disabled');
-    }
-    else if (currentPage > 1) {
-        $('.gridview button.gridview-next').removeAttr('disabled');
-        $('.gridview button.gridview-prev').removeAttr('disabled');
-    }
-    else if (currentPage == 1) {
-        $('.gridview button.gridview-next').removeAttr('disabled');
-        $('.gridview button.gridview-prev').attr('disabled', 'disabled');
-    }
-    else if (currentPage == lastPage) {
-        $('.gridview button.gridview-next').attr('disabled', 'disabled');
-        $('.gridview button.gridview-prev').removeAttr('disabled');
-    }
-
-    //Update sorted columns
-    if ($gridviewObject.Sort != null) {
-        //clear all previous sorting
-        $('.gridview th.sortable').removeClass('sorted');
-        $('.gridview th.sortable > span').removeClass('fa-chevron-up').removeClass('fa-chevron-down');
-
-        //find sorted column
-        var sortableTh = $('.gridview th.sortable[data-sort=' + $gridviewObject.Sort.SortColumn + ']');
-        console.log(sortableTh);
-
-        $(sortableTh).addClass('sorted');
-        var $sortSpan = $(sortableTh).find('span');
-
-        if ($gridviewObject.Sort.Direction == 1) {
-            $sortSpan.addClass('fa-chevron-up');
+            LoadData(1, $pageSize, obj, $searchTerm, SortObject);
         }
-        else if ($gridviewObject.Sort.Direction == 2) {
-            $sortSpan.addClass('fa-chevron-down');
-        }
-    }
-}
-
-function NextPage(currentPage, pageSize) {
-    //Check For Last Page
-    var page = parseInt(currentPage) + 1;
-    LoadData(page, pageSize);
-}
-
-function PreviousPage(currentPage, pageSize) {
-    //Check For First Page
-    var page = parseInt(currentPage) + 1;
-    LoadData(currentPage - 1, pageSize);
-}
-
-function GotoPage(page, pageSize) {
-    //Check For Correct Page Number
-    LoadData(page, pageSize);
-}
-
-function ChangePageSize(pageSize) {
-    LoadData(1, pageSize);
-}
-
-function SortData(column, direction) {
-    var SortObject = { "SortColumn": column, "Direction": direction };
-
-    var $pageSize = $gridviewObject.ItemsPerPage; // $('#gridview-data-details span.PageSize').html();
-    var $searchTerm = $gridviewObject.searchTerm; // $('.gridview .search input[type=search]').val();
-
-    LoadData(1, $pageSize, $searchTerm, SortObject);
-}
+    };    
+}(jQuery));

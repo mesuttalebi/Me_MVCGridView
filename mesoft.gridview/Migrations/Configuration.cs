@@ -11,7 +11,7 @@ namespace mesoft.gridview.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
             ContextKey = "mesoft.gridview.Models.MyDbContext";
         }
 

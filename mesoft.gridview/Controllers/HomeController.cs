@@ -29,7 +29,7 @@ namespace mesoft.gridview.Controllers
         public ActionResult GetCustomers(PagingInfo PagingData)
         {
             var db = new MyDbContext();
-            var model = GridViewModelProvider.GetCustomersViewModel(db, PagingData);
+            var model = GridViewModelProvider.GetCustomersViewModel(db, PagingData);            
             return PartialView("_CustomersPartial", model);
         }
 

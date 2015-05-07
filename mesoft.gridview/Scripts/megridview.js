@@ -68,13 +68,25 @@
             });
 
             //Searching data
-            $(gridview).on('click', '.search button', function () {
+            $(gridview).on('click', '.search button', function() {
                 var $searchTerm = $('.search input[type=search]', gridview).val();
 
                 if ($searchTerm.length >= 0) {
-                    LoadData(1, 10,gridview, $searchTerm);
+                    LoadData(1, 10, gridview, $searchTerm);
                 }
-            })
+            });
+
+            //Pressing Enter event for Search input
+            $(gridview).on('keypress', '.search input[type=search]', function (e) {
+                var key = e.which;
+                if (key == 13) {
+                    var $searchTerm = $('.search input[type=search]', gridview).val();
+
+                    if ($searchTerm.length >= 0) {
+                        LoadData(1, 10, gridview, $searchTerm);
+                    }
+                }
+            });
 
             //Sorting Data
             $(gridview).on('click', 'th.sortable', function () {
@@ -93,7 +105,38 @@
                     //sort Ascending
                     SortData($(this).data('sort'), 'Ascending', gridview);
                 }
-            });            
+            });
+
+
+            //Filtering Data
+            $(gridview).on('click', 'a.filter', function (ev) {
+                ev.preventDefault();
+
+                $('li.active').removeClass('active');
+                $(this).parents('li').addClass('active');
+
+                //Collecting new filter values
+                var $column = $(this).data('filter-column');
+                var $value = $(this).data('filter-value');
+                var $operator = $(this).data('filter-operator');
+                var $conjunction = $(this).data('filter-conjunction');
+
+                //creating new filter object
+                var filterObj = { column: $column, value: $value, operator: $operator, conjunction: $conjunction };
+
+                //Getting existing filters
+                var filters = $gridviewObject.Filters;
+
+                if (filters !== null) {
+                    console.log('filters is not null');
+                } else {
+                    filters = filterObj;
+
+
+                }
+                console.log(filterObj);
+                console.log(filters);
+            });
         });
 
 
@@ -104,6 +147,8 @@
 
             var gridObject = $('.gridview-data-details', obj).html();
             $gridviewObject = JSON.parse(gridObject);
+
+            console.log($gridviewObject);
         }
 
         function LoadFirstPage(obj) {

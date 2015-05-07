@@ -17,11 +17,22 @@ namespace mesoft.gridview.Migrations
 
         protected override void Seed(mesoft.gridview.Models.MyDbContext context)
         {            
-            var customers = new List<Customer>();            
+            var customers = new List<Customer>();
+            string[] cities = {"Istanbul", "Trabzon", "Ankara", "Izmir", "Samsun", "Erzurum"};
 
+            
             for (int i = 0; i < 39; i++)
             {
-                var cust = new Customer() { CompanyName = "Company Name " + i , ContactTitle = "Contact Title " + i, Country = "Turkey", City = "Istanbul", Phone = "6564811215", Address = "Address For Company " + i };
+                var rnd = new Random();
+                var cust = new Customer()
+                {
+                    CompanyName = "Company Name " + i,
+                    ContactTitle = "Contact Title " + i,
+                    Country = "Turkey",
+                    City = cities[rnd.Next(0, cities.Length-1)],
+                    Phone = "6564811215",
+                    Address = "Address For Company " + i
+                };
                 customers.Add(cust);
             }
 

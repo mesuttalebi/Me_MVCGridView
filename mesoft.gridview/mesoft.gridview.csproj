@@ -132,6 +132,7 @@
     <Compile Include="Models\GridviewModel.cs" />
     <Compile Include="Models\GridViewModelProvider.cs" />
     <Compile Include="Models\MyDbContext.cs" />
+    <Compile Include="Models\UniversalPredicateBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

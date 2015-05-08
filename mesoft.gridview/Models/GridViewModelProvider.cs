@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Web;
 using System.Web.Helpers;
+
 
 namespace mesoft.gridview.Models
 {
@@ -46,17 +48,26 @@ namespace mesoft.gridview.Models
             //filter
             if (PagingData.Filters != null)
             {
+                var predicate = PredicateBuilder.True<Customer>();
+
+                
                 foreach (var filterObj in PagingData.Filters)
                 {
-                    switch (filterObj.Column)
-                    {
-                        case "City":
-                            if (filterObj.Value.ToLower() != "all")                               
-                                customers = customers.Where(x => x.City == filterObj.Value);
-                            break;
+                    var tempValue = filterObj.Value;
+                    var tempColumn = filterObj.Column;
+                    var tempConj = filterObj.Conjunction;
+                    var tempOpr = filterObj.Operator;
 
-                    }
+                    predicate = predicate.
 
+                    //switch (filterObj.Column)
+                    //{
+                    //    case "City":
+                    //        if (filterObj.Value.ToLower() != "all")
+                    //            customers = customers.Where(x => x.City == tempValue);
+                            
+                    //        break;
+                    //}
                 }
             }
 

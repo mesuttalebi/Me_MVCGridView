@@ -22,7 +22,8 @@ namespace mesoft.gridview.Models
                     PageOptions = new List<int>() { 10, 25, 50, 100 },
                     ShowPageOptions = true,
                     SearchTerm = PagingData.SearchTerm,
-                    Sort = PagingData.Sort
+                    Sort = PagingData.Sort,
+                    Filters = PagingData.Filters
                 }                
             };
 
@@ -36,15 +37,34 @@ namespace mesoft.gridview.Models
         {
             var customers = Customers;
 
+            //search
             if (!string.IsNullOrEmpty(PagingData.SearchTerm))
             {
                 customers = customers.Where(x => (x.CompanyName.Contains(PagingData.SearchTerm) || x.ContactTitle.Contains(PagingData.SearchTerm)));
             }
 
+            //filter
+            if (PagingData.Filters != null)
+            {
+                foreach (var filterObj in PagingData.Filters)
+                {
+                    switch (filterObj.Column)
+                    {
+                        case "City":
+                            if (filterObj.Value.ToLower() != "all")                               
+                                customers = customers.Where(x => x.City == filterObj.Value);
+                            break;
+
+                    }
+
+                }
+            }
+
+
             TotalItems = customers.Count();
 
+            //sort
             customers = customers.OrderBy(x => x.Id);
-
             if (PagingData.Sort != null)
             {
                 switch (PagingData.Sort.Direction)

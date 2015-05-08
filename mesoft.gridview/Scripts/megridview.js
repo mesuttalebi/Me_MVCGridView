@@ -17,35 +17,29 @@
             LoadFirstPage(gridview);
 
             //Btn gridview-next click event
-            $(gridview).on('click', 'button.gridview-next', function () {
-                var currentPage = $gridviewObject.CurrentPage;
-                var pageSize = $gridviewObject.ItemsPerPage;
-
+            $(gridview).on('click', 'button.gridview-next', function () {               
                 if ($('button.gridview-next', gridview).is(':enabled')) {
-                    NextPage(currentPage, pageSize, gridview);
+                    NextPage(gridview);
                 }
             });
 
             //Btn gridview-prev click event
             $(gridview).on('click', 'button.gridview-prev', function () {
-                var currentPage = $gridviewObject.CurrentPage;
-                var pageSize = $gridviewObject.ItemsPerPage;
-
                 if ($('button.gridview-prev', gridview).is(':enabled')) {
-                    PreviousPage(currentPage, pageSize, gridview);
+                    PreviousPage(gridview);
                 }
             });
 
             //Change PageSize
-            $(gridview).on('click', 'div.gridview-itemization ul.dropdown-menu li a', function () {
+            $(gridview).on('click', 'div.gridview-itemization ul.dropdown-menu li a', function (ev) {
+                ev.preventDefault();
+
                 var $li = $(this).parent();
 
                 var size = $($li).data('value');
                 var pageSize = $gridviewObject.ItemsPerPage;
                 if (size != pageSize)
-                    ChangePageSize(size, gridview);
-
-                event.preventDefault();
+                    ChangePageSize(size, gridview);               
             });
 
             //Pressing Enter event for page number input
@@ -63,7 +57,7 @@
                     if (page > lastPage)
                         page = lastPage;
 
-                    GotoPage(page, pageSize, gridview);
+                    GotoPage(page, gridview);
                 }
             });
 
@@ -72,7 +66,7 @@
                 var $searchTerm = $('.search input[type=search]', gridview).val();
 
                 if ($searchTerm.length >= 0) {
-                    LoadData(1, 10, gridview, $searchTerm);
+                    SearchData($searchTerm, gridview);
                 }
             });
 
@@ -83,7 +77,7 @@
                     var $searchTerm = $('.search input[type=search]', gridview).val();
 
                     if ($searchTerm.length >= 0) {
-                        LoadData(1, 10, gridview, $searchTerm);
+                        SearchData($searchTerm, gridview);
                     }
                 }
             });
@@ -107,7 +101,6 @@
                 }
             });
 
-
             //Filtering Data
             $(gridview).on('click', 'a.filter', function (ev) {
                 ev.preventDefault();
@@ -120,22 +113,37 @@
                 var $value = $(this).data('filter-value');
                 var $operator = $(this).data('filter-operator');
                 var $conjunction = $(this).data('filter-conjunction');
-
+                
                 //creating new filter object
-                var filterObj = { column: $column, value: $value, operator: $operator, conjunction: $conjunction };
+                var filterObj = { Column: $column, Value: $value, Operator: $operator, Conjunction: $conjunction };
 
                 //Getting existing filters
                 var filters = $gridviewObject.Filters;
 
-                if (filters !== null) {
-                    console.log('filters is not null');
+                if (filters !== undefined && filters !== null) {                   
+                    //Searching for same column filters                   
+                    var foundFlag = false;
+                    for (var i = 0; i < filters.length; i++) {
+                        if (filterObj.Column === filters[i].Column) {                            
+                            filters[i] = filterObj;
+                            foundFlag = true;
+                            break;
+                        }
+                    }
+
+                    //same column not found, 
+                    //add new column filter to filters
+                    if (!foundFlag) {
+                        $gridviewObject.Filters.push(filterObj);
+                    }
+
+                    LoadData(gridview);
+
                 } else {
-                    filters = filterObj;
-
-
-                }
-                console.log(filterObj);
-                console.log(filters);
+                    $gridviewObject.Filters = [];
+                    $gridviewObject.Filters.push(filterObj);
+                    LoadData(gridview);
+                }                
             });
         });
 
@@ -148,37 +156,35 @@
             var gridObject = $('.gridview-data-details', obj).html();
             $gridviewObject = JSON.parse(gridObject);
 
-            console.log($gridviewObject);
+            //console.log($gridviewObject);
         }
 
         function LoadFirstPage(obj) {
             var $defaultPageSize = $('.gridview-viewport', obj).data('default-pagesize');
 
-            LoadData(1, $defaultPageSize, obj);
+            var data = { "CurrentPage": 1, "ItemsPerPage": $defaultPageSize };
+
+            GetData(data, obj);
         }
 
-        function LoadData(page, pageSize, obj, searchTerm, sortObject) {
+        function LoadData(obj) {
+                      
+            var data = {
+                "CurrentPage": $gridviewObject.CurrentPage,
+                "ItemsPerPage": $gridviewObject.ItemsPerPage,
+                "SearchTerm": $gridviewObject.SearchTerm,
+                "Sort": $gridviewObject.Sort,
+                "Filters": $gridviewObject.Filters
+            };
+            
+            GetData(data, obj);
+        }
+
+        function GetData(data, obj) {
             //Start Loading
             ShowLoader(obj);
 
             var $getDataUrl = $('.gridview-viewport', obj).data('getdata-function');
-
-            //retrieving search term
-            if (searchTerm == undefined) {
-                searchTerm = $('.search input[type=search]', obj).val();
-            }
-
-            //retrieving sort object
-            if (sortObject == undefined) {
-                //try to get sort object from gridviewObject
-                sortObject = $gridviewObject.Sort;
-            }
-
-            var data = { "CurrentPage": page, "ItemsPerPage": pageSize, "SearchTerm": searchTerm };
-
-            if (sortObject != undefined) {
-                data.Sort = sortObject;
-            }
 
             $.ajax({
                 url: $getDataUrl,
@@ -281,34 +287,52 @@
             }
         }
 
-        function NextPage(currentPage, pageSize, obj) {
+        function NextPage(obj) {
             //Check For Last Page
-            var page = parseInt(currentPage) + 1;
-            LoadData(page, pageSize, obj);
+            var page = parseInt($gridviewObject.CurrentPage) + 1;
+
+            $gridviewObject.CurrentPage = page;
+
+            LoadData(obj);
         }
 
-        function PreviousPage(currentPage, pageSize, obj) {
+        function PreviousPage(obj) {
             //Check For First Page
-            var page = parseInt(currentPage) + 1;
-            LoadData(currentPage - 1, pageSize, obj);
+            var page = parseInt($gridviewObject.CurrentPage) - 1;
+            $gridviewObject.CurrentPage = page;
+            LoadData(obj);
         }
 
-        function GotoPage(page, pageSize, obj) {
+        function GotoPage(page, obj) {
             //Check For Correct Page Number
-            LoadData(page, pageSize, obj);
+            $gridviewObject.CurrentPage = page;
+
+            LoadData(obj);
         }
 
         function ChangePageSize(pageSize, obj) {
-            LoadData(1, pageSize, obj);
+
+            $gridviewObject.CurrentPage = 1;
+            $gridviewObject.ItemsPerPage = pageSize;
+
+            LoadData(obj);
         }
 
         function SortData(column, direction, obj) {
             var SortObject = { "SortColumn": column, "Direction": direction };
 
-            var $pageSize = $gridviewObject.ItemsPerPage; // $('#gridview-data-details span.PageSize').html();
-            var $searchTerm = $gridviewObject.searchTerm; // $('.gridview .search input[type=search]').val();
+            //var $pageSize = $gridviewObject.ItemsPerPage; 
+            //var $searchTerm = $gridviewObject.searchTerm; 
+            $gridviewObject.Sort = SortObject;
 
-            LoadData(1, $pageSize, obj, $searchTerm, SortObject);
+            LoadData(obj);
+        }
+
+        function SearchData(searchTerm, obj) {
+            $gridviewObject.SearchTerm = searchTerm;
+            $gridviewObject.CurrentPage = 1;
+            $gridviewObject.ItemsPerPage = $gridviewObject.PageOptions[0];
+            LoadData(obj);
         }
     };    
 }(jQuery));

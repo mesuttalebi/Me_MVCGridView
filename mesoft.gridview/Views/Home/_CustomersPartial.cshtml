@@ -27,11 +27,14 @@
             <th>
                 @(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().Phone))
             </th>
+            <th>
+                @Html.DisplayNameFor(x=> x.Customers.FirstOrDefault().Founded)
+            </th>
         </tr>
     </thead>
 
     <tbody id="CustomersTable" class="gridview-list-items">
-        @if (Model.Customers.Count() > 0)
+        @if (Model.Customers.Any())
         {
             foreach (var c in Model.Customers)
             {
@@ -43,13 +46,14 @@
                     <td class="value">@c.City</td>
                     <td class="Description">@c.Address</td>
                     <td class="value">@c.Phone</td>
+                    <td>@c.Founded</td>
                 </tr>
             }
         }
         else
         {
             <tr>
-                <td colspan="7">
+                <td colspan="8">
                     <div class="alert alert-warning alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                         <strong>Warning!</strong> No Customers Found!

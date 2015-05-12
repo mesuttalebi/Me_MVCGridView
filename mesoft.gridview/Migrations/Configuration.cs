@@ -19,7 +19,7 @@ namespace mesoft.gridview.Migrations
         {            
             var customers = new List<Customer>();
             string[] cities = {"Istanbul", "Trabzon", "Ankara", "Izmir", "Samsun", "Erzurum"};
-
+            DateTime[] dates = { new DateTime(1982, 5, 2), new DateTime(1983, 3, 5), new DateTime(1988, 2, 9), new DateTime(1999, 12, 1), new DateTime(2005, 5, 15), new DateTime(2010, 01, 01) };
             
             for (int i = 0; i < 39; i++)
             {
@@ -31,7 +31,8 @@ namespace mesoft.gridview.Migrations
                     Country = "Turkey",
                     City = cities[rnd.Next(0, cities.Length-1)],
                     Phone = "6564811215",
-                    Address = "Address For Company " + i
+                    Address = "Address For Company " + i,
+                    Founded = dates[rnd.Next(0, dates.Length - 1)]
                 };
                 customers.Add(cust);
             }

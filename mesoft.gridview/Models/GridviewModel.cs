@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace mesoft.gridview.Models
 {
@@ -34,7 +35,7 @@ namespace mesoft.gridview.Models
 
     public class FilterObject
     {
-        public string Column { get; set; }
+        public string Column { get; set; }        
 
         public string Value { get; set; }
 
@@ -69,5 +70,107 @@ namespace mesoft.gridview.Models
     {
         And,
         Or
-    }   
+    }
+
+    public class Extensions
+    {
+        public static string GetWhereClause(FilterObject filterObj, Type valueType)
+        {           
+            string whereClause = "true";
+            if (valueType != typeof (DateTime))
+            {
+                switch (filterObj.Operator)
+                {
+                    case FilterOperator.Contains:
+                        if (valueType == typeof (string))
+                            whereClause += string.Format(" {0} {1}.Contains(\"{2}\")", filterObj.Conjunction,
+                                filterObj.Column, filterObj.Value);
+                        break;
+                    case FilterOperator.GreaterThan:
+                        if (valueType != typeof (string))
+                            whereClause += string.Format(" {0} {1} > {2}", filterObj.Conjunction, filterObj.Column,
+                                filterObj.Value);
+                        break;
+                    case FilterOperator.GreaterThanOrEqual:
+                        if (valueType != typeof (string))
+                            whereClause += string.Format(" {0} {1} >= {2}", filterObj.Conjunction, filterObj.Column,
+                                filterObj.Value);
+                        break;
+                    case FilterOperator.LessThan:
+                        if (valueType != typeof (string))
+                            whereClause += string.Format(" {0} {1} < {2}", filterObj.Conjunction, filterObj.Column,
+                                filterObj.Value);
+                        break;
+                    case FilterOperator.LessThanOrEqual:
+                        if (valueType != typeof (string))
+                            whereClause += string.Format(" {0} {1} <= {2}", filterObj.Conjunction, filterObj.Column,
+                                filterObj.Value);
+                        break;
+                    case FilterOperator.StartsWith:
+                        if (valueType != typeof (string))
+                            whereClause += string.Format(" {0} {1}.StartsWith(\"{2}\")", filterObj.Conjunction,
+                                filterObj.Column, filterObj.Value);
+                        break;
+                    case FilterOperator.EndsWith:
+                        if (valueType != typeof (string))
+                            whereClause += string.Format(" {0} {1}.EndsWith(\"{2}\")", filterObj.Conjunction,
+                                filterObj.Column, filterObj.Value);
+                        break;
+                    case FilterOperator.Equals:
+
+                        whereClause +=
+                            string.Format(valueType == typeof (string) ? " {0} {1} == \"{2}\"" : " {0} {1} == {2}",
+                                filterObj.Conjunction, filterObj.Column, filterObj.Value);
+                        break;
+                    case FilterOperator.NotEqual:
+
+                        whereClause +=
+                            string.Format(valueType == typeof (string) ? " {0} {1} != \"{2}\"" : " {0} {1} != {2}",
+                                filterObj.Conjunction, filterObj.Column, filterObj.Value);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            else
+            {
+                DateTime dt;
+                DateTime.TryParse(filterObj.Value, out dt);
+
+                switch (filterObj.Operator)
+                {
+                    case FilterOperator.Contains:                       
+                        break;
+                    case FilterOperator.GreaterThan:
+                        
+                         whereClause += string.Format(" {0} {1} > DateTime(\"{2}\")", filterObj.Conjunction, filterObj.Column, dt);
+                        break;
+                    case FilterOperator.GreaterThanOrEqual:
+
+                        whereClause += string.Format(" {0} {1} >= DateTime(\"{2}\")", filterObj.Conjunction, filterObj.Column, dt);
+                        break;
+                    case FilterOperator.LessThan:
+
+                        whereClause += string.Format(" {0} {1} <  DateTime(\"{2}\")", filterObj.Conjunction, filterObj.Column, dt);
+                        break;
+                    case FilterOperator.LessThanOrEqual:
+                        whereClause += string.Format(" {0} {1} <=  DateTime(\"{2}\")", filterObj.Conjunction, filterObj.Column, dt);
+                        break;
+                    case FilterOperator.StartsWith:                       
+                        break;
+                    case FilterOperator.EndsWith:                        
+                        break;
+                    case FilterOperator.Equals:
+                        whereClause += string.Format(" {0} {1} ==  DateTime(\"{2}\")", filterObj.Conjunction, filterObj.Column, dt);
+                        break;
+                    case FilterOperator.NotEqual:
+                        whereClause += string.Format(" {0} {1} !=  DateTime(\"{2}\")", filterObj.Conjunction, filterObj.Column, dt);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            return whereClause;
+        }
+    }
 }

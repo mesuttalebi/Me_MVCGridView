@@ -112,7 +112,7 @@
                 var $column = $(this).data('filter-column');
                 var $value = $(this).data('filter-value');
                 var $operator = $(this).data('filter-operator');
-                var $conjunction = $(this).data('filter-conjunction');
+                var $conjunction = $(this).data('filter-conjunction');               
                 
                 //creating new filter object
                 var filterObj = { Column: $column, Value: $value, Operator: $operator, Conjunction: $conjunction };

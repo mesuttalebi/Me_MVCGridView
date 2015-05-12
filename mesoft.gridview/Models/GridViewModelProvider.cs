@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic;
 using System.Linq.Expressions;
 using System.Web;
 using System.Web.Helpers;
@@ -47,28 +48,19 @@ namespace mesoft.gridview.Models
 
             //filter
             if (PagingData.Filters != null)
-            {
-                var predicate = PredicateBuilder.True<Customer>();
-
-                
+            {                
                 foreach (var filterObj in PagingData.Filters)
                 {
-                    var tempValue = filterObj.Value;
-                    var tempColumn = filterObj.Column;
-                    var tempConj = filterObj.Conjunction;
-                    var tempOpr = filterObj.Operator;
+                    switch (filterObj.Column)
+                    {
+                        case "City":
+                            if (filterObj.Value.ToLower() != "all")
+                                customers = customers.Where(Extensions.GetWhereClause(filterObj, typeof(string)));
+                            break;
 
-                    predicate = predicate.
-
-                    //switch (filterObj.Column)
-                    //{
-                    //    case "City":
-                    //        if (filterObj.Value.ToLower() != "all")
-                    //            customers = customers.Where(x => x.City == tempValue);
-                            
-                    //        break;
-                    //}
-                }
+                        //Add Other Filter Columns Here
+                    }
+                }                                
             }
 
 
@@ -109,6 +101,6 @@ namespace mesoft.gridview.Models
                 .Skip((PagingData.CurrentPage - 1) * PagingData.ItemsPerPage).Take(PagingData.ItemsPerPage);
 
             return customers;
-        }
+        }        
     }
 }

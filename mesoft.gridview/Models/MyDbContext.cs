@@ -8,6 +8,12 @@ namespace mesoft.gridview.Models
 {    
     public class MyDbContext : DbContext
     {
+        public MyDbContext()
+            : base("DefaultConnection")
+        {
+            
+        }
+
         public DbSet<Customer> Customers { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

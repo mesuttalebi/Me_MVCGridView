@@ -1,6 +1,12 @@
-﻿using System;
+﻿/*
+    megridview v0.3.1
+    Developed By Mesut Talebi (mesut.talebi@yahoo.com)
+    Open Source And no licence :) free to use 
+*/
+
+
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace mesoft.gridview.Models
 {

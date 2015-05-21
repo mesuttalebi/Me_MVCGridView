@@ -1,5 +1,5 @@
 ﻿/*
-    megridview v0.2
+    megridview v0.3.1
     Developed By Mesut Talebi (mesut.talebi@yahoo.com)
     Open Source And no licence :) free to use 
 */
@@ -102,53 +102,58 @@
             });
 
             //Filtering Data
-            $(gridview).on('click', 'a.filter', function (ev) {
+            $(gridview).on('click', '.filter', function (ev) {
                 ev.preventDefault();
 
-                $('li.active').removeClass('active');
-                $(this).parents('li').addClass('active');
+                FilterData(this, gridview);
 
-                //Collecting new filter values
-                var $column = $(this).data('filter-column');
-                var $value = $(this).data('filter-value');
-                var $operator = $(this).data('filter-operator');
-                var $conjunction = $(this).data('filter-conjunction');               
-                
-                //creating new filter object
-                var filterObj = { Column: $column, Value: $value, Operator: $operator, Conjunction: $conjunction };
+                var p = $(this).parents('.filter-parent');
+                var obj = $('.active', p)[0].nodeName.toLowerCase();
 
-                //Getting existing filters
-                var filters = $gridviewObject.Filters;
-
-                if (filters !== undefined && filters !== null) {                   
-                    //Searching for same column filters                   
-                    var foundFlag = false;
-                    for (var i = 0; i < filters.length; i++) {
-                        if (filterObj.Column === filters[i].Column) {                            
-                            filters[i] = filterObj;
-                            foundFlag = true;
-                            break;
-                        }
-                    }
-
-                    //same column not found, 
-                    //add new column filter to filters
-                    if (!foundFlag) {
-                        $gridviewObject.Filters.push(filterObj);
-                    }
-
-                    LoadData(gridview);
-
-                } else {
-                    $gridviewObject.Filters = [];
-                    $gridviewObject.Filters.push(filterObj);
-                    LoadData(gridview);
-                }                
+                $(obj + '.active', p).removeClass('active');
+                $(this).parents(obj).addClass('active');                
             });
         });
 
+        function FilterData(object, gridview) {
+            //Collecting new filter values
+            var $column = $(object).data('filter-column');
+            var $value = $(object).data('filter-value');
+            var $operator = $(object).data('filter-operator');
+            var $conjunction = $(object).data('filter-conjunction');
 
+            //creating new filter object
+            var filterObj = { Column: $column, Value: $value, Operator: $operator, Conjunction: $conjunction };
 
+            //Getting existing filters
+            var filters = $gridviewObject.Filters;
+
+            if (filters !== undefined && filters !== null) {
+                //Searching for same column filters                   
+                var foundFlag = false;
+                for (var i = 0; i < filters.length; i++) {
+                    if (filterObj.Column === filters[i].Column) {
+                        filters[i] = filterObj;
+                        foundFlag = true;
+                        break;
+                    }
+                }
+
+                //same column not found, 
+                //add new column filter to filters
+                if (!foundFlag) {
+                    $gridviewObject.Filters.push(filterObj);
+                }
+
+                LoadData(gridview);
+
+            } else {
+                $gridviewObject.Filters = [];
+                $gridviewObject.Filters.push(filterObj);
+                LoadData(gridview);
+            }
+        }
+       
         function Init(obj) {
             //add icon place holder for sortable fields
             $('th.sortable', obj).append('<span class="pull-right fa"></span>');

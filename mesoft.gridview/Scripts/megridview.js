@@ -8,11 +8,79 @@
 
         var $gridviewObject = new Object();
 
+        var options = {
+            ShowPageOptions : true,
+            ItemsPerPage : 10,
+            PageOptions: [10, 20, 50, 100],
+            PageSizeText: "Page Size",
+            PageText: "Page"
+        }
+       
+        //A function to Automatically insert page options
+        var writePagerHtml = function (obj) {
+            var pagerHtml =
+        '<!-- Pager Left-->' +
+        '<div class="col-sm-6 col-xs-12">' +
+            '<!-- Page Size Area -->' +
+            '<div class="gridview-itemization">';
+            if (options.ShowPageOptions === true) {
+                pagerHtml += '<span>Page Size</span>' +
+                '<div class="btn-group selectlist dropup" data-resize="auto">' +
+                    '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">' +
+                        '<span class="selected-label">' + options.ItemsPerPage + '</span>' +
+                        '<span class="caret"></span>' +
+                        '<span class="sr-only">' + options.PageSizeText + '&nbsp;</span>' +
+                    '</button>' +
+                    '<ul class="dropdown-menu" role="menu">';
+                for (var i = 0; i < options.PageOptions.length ; i++) {
+                    pagerHtml += '<li data-value="' + options.PageOptions[i] + '"><a href="#">' + options.PageOptions[i] + '</a></li>';
+                }
+                pagerHtml += '</ul>' +
+                '<input class="hidden hidden-field" name="itemsPerPage" readonly="readonly" aria-hidden="true" type="text">' +
+            '</div>';
+            }
+            pagerHtml += '<span>' +
+                '<span class="gridview-start">1</span> - <span class="gridview-end">' + options.ItemsPerPage + '</span>' +
+                '(<span class="gridview-count">0</span>)' +
+            '</span>' +
+        '</div>' +
+        '<!-- / Page Size Area -->' +
+    '</div>' +
+    '<!-- Pager Right-->' +
+    '<div class="col-sm-6 col-xs-12 text-right">' +
+        '<!-- Pagination -->' +
+        '<div class="gridview-pagination">' +
+            '<button type="button" class="btn btn-default btn-sm gridview-prev" disabled="disabled">' +
+                '<span class="fa fa-chevron-left"></span>' +
+                '<span class="sr-only">Previous Page</span>' +
+            '</button>' +
+            '<label class="page-label" id="myPageLabel">&nbsp;' + options.PageText + '&nbsp;</label>' +
+            '<input type="number" class="form-control gridview-secondaryPaging active" aria-labelledby="myPageLabel" value="1">' +
+            '<span>' +
+                '/ <span class="gridview-pages">0</span>' +
+            '</span>' +
+            '<button type="button" class="btn btn-default btn-sm gridview-next">' +
+                '<span class="fa fa-chevron-right"></span>' +
+                '<span class="sr-only">Next Page</span>' +
+            '</button>' +
+        '</div>' +
+        '<!-- /Pagination -->' +
+    '</div>' +
+    '<!-- /Pager Right-->';
+
+            $(obj).find('div.gridview-footer').html(pagerHtml);
+        }
+
+
         return this.each(function () {
 
             //The gridview object that we are working on it
             var gridview = this;
-           
+       
+            //Inserts Pager Html
+            writePagerHtml(gridview);
+
+
             // Get First Page
             LoadFirstPage(gridview);
 
@@ -338,6 +406,6 @@
             $gridviewObject.CurrentPage = 1;
             $gridviewObject.ItemsPerPage = $gridviewObject.PageOptions[0];
             LoadData(obj);
-        }
+        }              
     };    
 }(jQuery));

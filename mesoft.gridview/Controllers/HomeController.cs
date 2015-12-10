@@ -11,19 +11,7 @@ namespace mesoft.gridview.Controllers
     {
         public ActionResult Index()
         {
-            var model = new CustomersViewModel()
-            {
-                Customers = null,
-                PagingInfo = new PagingInfo()
-                {
-                    CurrentPage=1,
-                    ItemsPerPage= 10,
-                    PageOptions = new List<int>() { 10,25, 50, 100},
-                    ShowPageOptions= true,
-                    TotalItems=1
-                }
-            };
-            return View(model);
+            return View();
         }
 
         public ActionResult GetCustomers(PagingInfo PagingData)

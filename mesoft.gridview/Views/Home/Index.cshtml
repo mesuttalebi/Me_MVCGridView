@@ -1,9 +1,10 @@
-﻿@{
+﻿@using System.Threading
+@{
     ViewBag.Title = "Home Page";
 }
 
 <div class="jumbotron">
-    <h1>MeSoft Gridview V0.3.1</h1>
+    <h1>MeSoft Gridview V0.3.2</h1>
     <p class="lead">No Magic! Simple To Use, Simple to Develop</p>
     <p><a href="#" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
 </div>
@@ -14,7 +15,12 @@
 </div>
 
 @section Scripts {
-    <script>
+
+    @{
+        string culture = Thread.CurrentThread.CurrentCulture.Name;
+    }
+    <script src=@(Url.Content(string.Format("~/Scripts/locales/megridview.{0}.js", culture.Substring(0, culture.IndexOf("-") == 0 ? culture.Length : culture.IndexOf("-")))))></script>
+    <script>        
         $('.gridview1').meGridView();        
         //$('.gridview2').meGridView();
     </script>

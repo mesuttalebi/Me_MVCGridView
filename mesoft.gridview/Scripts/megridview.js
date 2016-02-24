@@ -1,21 +1,15 @@
 ﻿/*
-    megridview v0.3.1
+    megridview v0.3.2
     Developed By Mesut Talebi (mesut.talebi@yahoo.com)
     Open Source And no licence :) free to use 
 */
-(function ($) {   
-    $.fn.meGridView = function () {
+(function ($) {
+    $.fn.meGridView = function (options) {
 
         var $gridviewObject = new Object();
 
-        var options = {
-            ShowPageOptions : true,
-            ItemsPerPage : 10,
-            PageOptions: [10, 20, 50, 100],
-            PageSizeText: "Page Size",
-            PageText: "Page"
-        }
-       
+        var defaults = $.extend({}, $.fn.meGridView.defaults, options);
+
         //A function to Automatically insert page options
         var writePagerHtml = function (obj) {
             var pagerHtml =
@@ -23,24 +17,24 @@
         '<div class="col-sm-6 col-xs-12">' +
             '<!-- Page Size Area -->' +
             '<div class="gridview-itemization">';
-            if (options.ShowPageOptions === true) {
-                pagerHtml += '<span>Page Size</span>' +
+            if (defaults.ShowPageOptions === true) {
+                pagerHtml += '<span> ' + defaults.PageSizeText + ' </span>' +
                 '<div class="btn-group selectlist dropup" data-resize="auto">' +
                     '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">' +
-                        '<span class="selected-label">' + options.ItemsPerPage + '</span>' +
+                        '<span class="selected-label"> ' + defaults.ItemsPerPage + ' </span>' +
                         '<span class="caret"></span>' +
-                        '<span class="sr-only">' + options.PageSizeText + '&nbsp;</span>' +
+                        '<span class="sr-only"> ' + defaults.PageSizeText + '&nbsp;</span>' +
                     '</button>' +
                     '<ul class="dropdown-menu" role="menu">';
-                for (var i = 0; i < options.PageOptions.length ; i++) {
-                    pagerHtml += '<li data-value="' + options.PageOptions[i] + '"><a href="#">' + options.PageOptions[i] + '</a></li>';
+                for (var i = 0; i < defaults.PageOptions.length ; i++) {
+                    pagerHtml += '<li data-value="' + defaults.PageOptions[i] + '"><a href="#">' + defaults.PageOptions[i] + '</a></li>';
                 }
                 pagerHtml += '</ul>' +
                 '<input class="hidden hidden-field" name="itemsPerPage" readonly="readonly" aria-hidden="true" type="text">' +
             '</div>';
             }
-            pagerHtml += '<span>' +
-                '<span class="gridview-start">1</span> - <span class="gridview-end">' + options.ItemsPerPage + '</span>' +
+            pagerHtml += '<span> ' +
+                '<span class="gridview-start">1</span> - <span class="gridview-end">' + defaults.ItemsPerPage + '</span>' +
                 '(<span class="gridview-count">0</span>)' +
             '</span>' +
         '</div>' +
@@ -54,11 +48,11 @@
                 '<span class="fa fa-chevron-left"></span>' +
                 '<span class="sr-only">Previous Page</span>' +
             '</button>' +
-            '<label class="page-label" id="myPageLabel">&nbsp;' + options.PageText + '&nbsp;</label>' +
+            '<label class="page-label" id="myPageLabel">&nbsp;' + defaults.PageText + '&nbsp;</label>' +
             '<input type="number" class="form-control gridview-secondaryPaging active" aria-labelledby="myPageLabel" value="1">' +
             '<span>' +
-                '/ <span class="gridview-pages">0</span>' +
-            '</span>' +
+                ' / <span class="gridview-pages">0</span>' +
+            '</span>&nbsp;' +
             '<button type="button" class="btn btn-default btn-sm gridview-next">' +
                 '<span class="fa fa-chevron-right"></span>' +
                 '<span class="sr-only">Next Page</span>' +
@@ -76,7 +70,7 @@
 
             //The gridview object that we are working on it
             var gridview = this;
-       
+
             //Inserts Pager Html
             writePagerHtml(gridview);
 
@@ -85,7 +79,7 @@
             LoadFirstPage(gridview);
 
             //Btn gridview-next click event
-            $(gridview).on('click', 'button.gridview-next', function () {               
+            $(gridview).on('click', 'button.gridview-next', function () {
                 if ($('button.gridview-next', gridview).is(':enabled')) {
                     NextPage(gridview);
                 }
@@ -107,7 +101,7 @@
                 var size = $($li).data('value');
                 var pageSize = $gridviewObject.ItemsPerPage;
                 if (size != pageSize)
-                    ChangePageSize(size, gridview);               
+                    ChangePageSize(size, gridview);
             });
 
             //Pressing Enter event for page number input
@@ -130,7 +124,7 @@
             });
 
             //Searching data
-            $(gridview).on('click', '.search button', function() {
+            $(gridview).on('click', '.search button', function () {
                 var $searchTerm = $('.search input[type=search]', gridview).val();
 
                 if ($searchTerm.length >= 0) {
@@ -179,7 +173,7 @@
                 var obj = $('.active', p)[0].nodeName.toLowerCase();
 
                 $(obj + '.active', p).removeClass('active');
-                $(this).parents(obj).addClass('active');                
+                $(this).parents(obj).addClass('active');
             });
         });
 
@@ -221,7 +215,7 @@
                 LoadData(gridview);
             }
         }
-       
+
         function Init(obj) {
             //add icon place holder for sortable fields
             $('th.sortable', obj).append('<span class="pull-right fa"></span>');
@@ -241,7 +235,7 @@
         }
 
         function LoadData(obj) {
-                      
+
             var data = {
                 "CurrentPage": $gridviewObject.CurrentPage,
                 "ItemsPerPage": $gridviewObject.ItemsPerPage,
@@ -249,7 +243,7 @@
                 "Sort": $gridviewObject.Sort,
                 "Filters": $gridviewObject.Filters
             };
-            
+
             GetData(data, obj);
         }
 
@@ -406,6 +400,23 @@
             $gridviewObject.CurrentPage = 1;
             $gridviewObject.ItemsPerPage = $gridviewObject.PageOptions[0];
             LoadData(obj);
-        }              
-    };    
+        }
+    };
+
+    $.fn.meGridView.defaults = {
+        ShowPageOptions: true,
+        ItemsPerPage: 10,
+        PageOptions: [10, 20, 50, 100]
+    };
+
+    $.fn.meGridView.locales = [];
+
+    $.fn.meGridView.locales['en'] = {
+        PageSizeText: "Page Size",
+        PageText: "Page",
+        PreviousPage: "Previous Page",
+        NextPage: "Next Page"
+    };
+
+    $.extend($.fn.meGridView.defaults, $.fn.meGridView.locales['en']);
 }(jQuery));

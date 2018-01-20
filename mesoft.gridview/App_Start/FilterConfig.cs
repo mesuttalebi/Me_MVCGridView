@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace mesoft.gridview
+namespace MT.GridView
 {
     public class FilterConfig
     {

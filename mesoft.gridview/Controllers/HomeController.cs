@@ -1,11 +1,11 @@
-﻿using mesoft.gridview.Models;
+﻿using MT.GridView.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace mesoft.gridview.Controllers
+namespace MT.GridView.Controllers
 {
     public class HomeController : Controller
     {
@@ -19,6 +19,15 @@ namespace mesoft.gridview.Controllers
             var db = new MyDbContext();
             var model = GridViewModelProvider.GetCustomersViewModel(db, PagingData);            
             return PartialView("_CustomersPartial", model);
+        }
+
+        public PartialViewResult GetGridViewFilter()
+        {
+            using (var db = new MyDbContext())
+            {
+                var model = db.Customers.Select(x => x.Country).Distinct().ToList();
+                return PartialView("_GridViewFilterPartial",model);
+            }
         }
 
         public ActionResult About()

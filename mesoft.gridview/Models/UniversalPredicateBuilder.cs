@@ -9,7 +9,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
 
-namespace mesoft.gridview.Models
+namespace MT.GridView.Models
 {
     /// <summary>
     /// Enables the efficient, dynamic composition of query predicates.

@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace mesoft.gridview
+namespace MT.GridView
 {
     public class BundleConfig
     {
@@ -21,14 +21,12 @@ namespace mesoft.gridview
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
-                      "~/Scripts/respond.js",
-                      "~/Scripts/megridview.js"));
+                      "~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/bootstrap-theme.css",
                       "~/Content/font-awesome.min.css",
-                      "~/Content/megridview.css",
                       "~/Content/site.css"));
 
             // Set EnableOptimizations to false for debugging. For more information,

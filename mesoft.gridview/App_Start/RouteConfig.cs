@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace mesoft.gridview
+namespace MT.GridView
 {
     public class RouteConfig
     {

@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 
-namespace mesoft.gridview.Models
+namespace MT.GridView.Models
 {
     public static class ExpresssionBuilder
     {

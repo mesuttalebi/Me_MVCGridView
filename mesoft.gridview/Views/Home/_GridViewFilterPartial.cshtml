@@ -1,0 +1,30 @@
+﻿@model IEnumerable<string>
+<!-- GridView Header Right-->
+<div class="col-sm-6 text-right">
+    <!-- ADD ANY FILTERING ACTIONS HERE-->    
+    Filter By Country:
+    <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+            Select Country <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu filter-parent" role="menu">
+            @foreach (var country in Model)
+            {
+                <li>
+                    <a href="#" class="filter-button"
+                       data-filter-column="Country"
+                       data-filter-value="@country"
+                       data-filter-operator="@MT.GridView.Models.FilterOperator.Equals"
+                       data-filter-conjunction="@MT.GridView.Models.FilterConjunction.And">@country</a>
+                </li>
+            }
+            <li class="divider"></li>
+            <li class="active">
+                <a href="#" class="filter-button"
+                   data-filter-column="Country"
+                   data-filter-value="All">All</a>
+            </li>
+        </ul>       
+    </div>
+</div>
+<!-- /GridView Header Right-->

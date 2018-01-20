@@ -4,7 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 
-namespace mesoft.gridview.Models
+namespace MT.GridView.Models
 {    
     public class MyDbContext : DbContext
     {

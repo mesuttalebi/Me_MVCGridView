@@ -1,6 +1,8 @@
 ﻿using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
-namespace mesoft.gridview.Models
+namespace MT.GridView.Models
 {
     public class Customer
     {
@@ -10,7 +12,7 @@ namespace mesoft.gridview.Models
         public string Address { get; set; }
         public string City { get; set; }               
         public string Country { get; set; }
-        public string Phone { get; set; }
+        public string Phone { get; set; }        
         public DateTime Founded { get; set; }
-    }
+    }   
 }

@@ -8,7 +8,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace mesoft.gridview.Models
+namespace MT.GridView.Models
 {
     public class PagingInfo
     {

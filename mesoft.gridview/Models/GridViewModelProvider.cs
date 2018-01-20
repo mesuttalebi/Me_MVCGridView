@@ -7,18 +7,18 @@ using System.Web;
 using System.Web.Helpers;
 
 
-namespace mesoft.gridview.Models
+namespace MT.GridView.Models
 {
     public class GridViewModelProvider
     {        
         internal static CustomersViewModel GetCustomersViewModel(MyDbContext db, PagingInfo PagingData)
         { 
-            int TotalItems = 0;
+            int totalItems = 0;
             var model = new CustomersViewModel()
             {
-               
-                Customers = GetResources(db.Customers.AsQueryable(), PagingData, out TotalItems),                
-                PagingInfo = new PagingInfo()
+
+                Customers = GetData(db.Customers.AsQueryable(), PagingData, out totalItems),
+                JsonPagingInfo = Json.Encode(new PagingInfo()
                 {
                     CurrentPage = PagingData.CurrentPage,
                     ItemsPerPage = PagingData.ItemsPerPage,
@@ -26,17 +26,15 @@ namespace mesoft.gridview.Models
                     ShowPageOptions = true,
                     SearchTerm = PagingData.SearchTerm,
                     Sort = PagingData.Sort,
-                    Filters = PagingData.Filters
-                }                
-            };
-
-            model.PagingInfo.TotalItems = TotalItems;
-            model.JsonPagingInfo = Json.Encode(model.PagingInfo);
+                    Filters = PagingData.Filters,
+                    TotalItems = totalItems
+                })               
+            };            
             
             return model;
         }
 
-        private static IQueryable<Customer> GetResources(IQueryable<Customer> Customers, PagingInfo PagingData, out int TotalItems)
+        private static IQueryable<Customer> GetData(IQueryable<Customer> Customers, PagingInfo PagingData, out int TotalItems)
         {
             var customers = Customers;
 
@@ -53,7 +51,7 @@ namespace mesoft.gridview.Models
                 {
                     switch (filterObj.Column)
                     {
-                        case "City":
+                        case "Country":
                             if (filterObj.Value.ToLower() != "all")
                                 customers = customers.Where(Extensions.GetWhereClause(filterObj, typeof(string)));
                             break;

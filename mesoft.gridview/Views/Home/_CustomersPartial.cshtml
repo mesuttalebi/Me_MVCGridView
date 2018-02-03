@@ -6,30 +6,14 @@
 <table class="table table-bordered table-striped">
     <thead>
         <tr class="gridview-list-header">
-            <th>
-                @(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().Id))
-            </th>
-            <th class="sortable" data-sort="CompanyName">
-                @(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().CompanyName))
-            </th>
-            <th class="sortable" data-sort="ContactTitle">
-                @(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().ContactTitle))
-            </th>
-            <th>
-                @(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().Country))
-            </th>
-            <th>
-                @(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().City))
-            </th>
-            <th>
-                @(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().Address))
-            </th>
-            <th>
-                @(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().Phone))
-            </th>
-            <th>
-                @Html.DisplayNameFor(x=> x.Customers.FirstOrDefault().Founded)
-            </th>
+            <th>@(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().Id))</th>
+            <th class="sortable" data-sort="CompanyName">@(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().CompanyName))</th>
+            <th class="sortable" data-sort="ContactTitle">@(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().ContactTitle))</th>
+            <th class="sortable" data-sort="Country">@(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().Country))</th>
+            <th class="sortable" data-sort="City">@(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().City))</th>
+            <th>@(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().Address))</th>
+            <th>@(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().Phone))</th>
+            <th class="sortable" data-sort="Founded">@Html.DisplayNameFor(x=> x.Customers.FirstOrDefault().Founded)</th>
         </tr>
     </thead>
 

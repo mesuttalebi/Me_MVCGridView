@@ -1,5 +1,5 @@
 ﻿/*
-    megridview v0.3.3
+    megridview v0.4.0
     Developed By Mesut Talebi (mesut.talebi@yahoo.com)
     Open Source And no licence :) free to use 
 */
@@ -348,7 +348,7 @@
                 $('th.sortable > span', obj).removeClass('fa-chevron-up').removeClass('fa-chevron-down');
 
                 //find sorted column
-                var sortableTh = $('th.sortable[data-sort=' + $gridviewObject.Sort.SortColumn + ']', obj);
+                var sortableTh = $('th.sortable[data-sort="' + $gridviewObject.Sort.SortColumn + '"]', obj);
                 console.log(sortableTh);
 
                 $(sortableTh).addClass('sorted');

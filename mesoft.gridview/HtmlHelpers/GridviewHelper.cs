@@ -1,4 +1,8 @@
-﻿using System;
+﻿//    megridview v0.4.0
+//    Developed By Mesut Talebi(mesut.talebi @yahoo.com)
+//    Open Source And no licence :) free to use
+
+using System;
 using System.Web.Mvc;
 
 namespace MT.GridView.HtmlHelpers
@@ -53,7 +57,7 @@ namespace MT.GridView.HtmlHelpers
             gridviewViewport.AddCssClass("gridview-viewport");
             gridviewViewport.Attributes.Add("id", "viewport");
             gridviewViewport.Attributes.Add("data-getdata-function", readUrl);
-            gridviewViewport.InnerHtml+= @"<div class=""gridview-canvas"" style=""min-height:400px;"">                        
+            gridviewViewport.InnerHtml+= @"<div class=""gridview-canvas table-responsive"" style=""min-height:400px;"">                        
                     </div>
                     <div class=""loading gridview-loader"">
                         <img src = ""/images/loading.gif"" />

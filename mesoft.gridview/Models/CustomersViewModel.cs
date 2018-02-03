@@ -7,7 +7,7 @@ namespace MT.GridView.Models
 {
     public class CustomersViewModel
     {
-        public IQueryable<Customer> Customers { get; set; }        
+        public IEnumerable<Customer> Customers { get; set; }        
 
         public string JsonPagingInfo { get; set; }
     }

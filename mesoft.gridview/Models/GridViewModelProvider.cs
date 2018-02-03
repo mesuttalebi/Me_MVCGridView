@@ -34,20 +34,19 @@ namespace MT.GridView.Models
             return model;
         }
 
-        private static IQueryable<Customer> GetData(IQueryable<Customer> Customers, PagingInfo PagingData, out int TotalItems)
+        private static IEnumerable<Customer> GetData(IQueryable<Customer> customers, PagingInfo pagingData, out int totalItems)
         {
-            var customers = Customers;
-
             //search
-            if (!string.IsNullOrEmpty(PagingData.SearchTerm))
+            if (!string.IsNullOrEmpty(pagingData.SearchTerm))
             {
-                customers = customers.Where(x => (x.CompanyName.Contains(PagingData.SearchTerm) || x.ContactTitle.Contains(PagingData.SearchTerm)));
+                customers = customers.Where(x => (x.CompanyName.Contains(pagingData.SearchTerm) 
+                                               || x.ContactTitle.Contains(pagingData.SearchTerm)));
             }
 
             //filter
-            if (PagingData.Filters != null)
+            if (pagingData.Filters != null)
             {                
-                foreach (var filterObj in PagingData.Filters)
+                foreach (var filterObj in pagingData.Filters)
                 {
                     switch (filterObj.Column)
                     {
@@ -61,44 +60,17 @@ namespace MT.GridView.Models
                 }                                
             }
 
-
-            TotalItems = customers.Count();
+            totalItems = customers.Count();
 
             //sort
             customers = customers.OrderBy(x => x.Id);
-            if (PagingData.Sort != null)
-            {
-                switch (PagingData.Sort.Direction)
-                {
-                    case SortDirection.Ascending:
-                        if (PagingData.Sort.SortColumn == "CompanyName")
-                        {
-                            customers = customers.OrderBy(x => x.CompanyName);
-                        }
-                        else if (PagingData.Sort.SortColumn == "ContactTitle")
-                        {
-                            customers = customers.OrderBy(x => x.ContactTitle);
-                        }
-                        break;
-                    case SortDirection.Descending:
-                        if (PagingData.Sort.SortColumn == "CompanyName")
-                        {
-                            customers = customers.OrderByDescending(x => x.CompanyName);
-                        }
-                        else if (PagingData.Sort.SortColumn == "ContactTitle")
-                        {
-                            customers = customers.OrderByDescending(x => x.ContactTitle);
-                        }
-                        break;
-                    case SortDirection.NotSet:
-                    default:
-                        break;
-                }
-            }
-            customers = customers
-                .Skip((PagingData.CurrentPage - 1) * PagingData.ItemsPerPage).Take(PagingData.ItemsPerPage);
 
-            return customers;
+            customers = customers.Sort(pagingData.Sort);
+            
+            customers = customers
+                .Skip((pagingData.CurrentPage - 1) * pagingData.ItemsPerPage).Take(pagingData.ItemsPerPage);
+
+            return customers.ToList();
         }        
     }
 }

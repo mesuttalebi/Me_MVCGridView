@@ -159,3 +159,5 @@ $RECYCLE.BIN/
 #Publish Settings
 PublishProfiles/
 /.vs/config/applicationhost.config
+/.vs/gridview/v15/Server/sqlite3
+/.vs/MT.GridView/v15/Server/sqlite3

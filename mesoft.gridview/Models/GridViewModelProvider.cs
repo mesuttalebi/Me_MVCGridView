@@ -11,30 +11,18 @@ namespace MT.GridView.Models
 {
     public class GridViewModelProvider
     {        
-        internal static CustomersViewModel GetCustomersViewModel(MyDbContext db, PagingInfo PagingData)
-        { 
-            int totalItems = 0;
-            var model = new CustomersViewModel()
+        internal static GridIndexViewModel<Customer> GetCustomersViewModel(MyDbContext db, PagingInfo PagingData)
+        {             
+            var model = new GridIndexViewModel<Customer>()
             {
-
-                Customers = GetData(db.Customers.AsQueryable(), PagingData, out totalItems),
-                JsonPagingInfo = Json.Encode(new PagingInfo()
-                {
-                    CurrentPage = PagingData.CurrentPage,
-                    ItemsPerPage = PagingData.ItemsPerPage,
-                    PageOptions = new List<int>() { 10, 25, 50, 100 },
-                    ShowPageOptions = true,
-                    SearchTerm = PagingData.SearchTerm,
-                    Sort = PagingData.Sort,
-                    Filters = PagingData.Filters,
-                    TotalItems = totalItems
-                })               
+                Data = GetData(db.Customers.AsQueryable(), PagingData),
+                PagingInfo = PagingData               
             };            
             
             return model;
         }
 
-        private static IEnumerable<Customer> GetData(IQueryable<Customer> customers, PagingInfo pagingData, out int totalItems)
+        private static IEnumerable<Customer> GetData(IQueryable<Customer> customers, PagingInfo pagingData)
         {
             //search
             if (!string.IsNullOrEmpty(pagingData.SearchTerm))
@@ -60,7 +48,7 @@ namespace MT.GridView.Models
                 }                                
             }
 
-            totalItems = customers.Count();
+            pagingData.TotalItems = customers.Count();
 
             //sort
             customers = customers.OrderBy(x => x.Id);

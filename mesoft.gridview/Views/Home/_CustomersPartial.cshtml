@@ -1,4 +1,4 @@
-﻿@model MT.GridView.Models.CustomersViewModel
+﻿@model MT.GridView.Models.GridIndexViewModel<MT.GridView.Models.Customer>
 
 @*Write Returned Data details here*@
 <span class="gridview-data-details" style="display:none;">@Html.Raw(Model.JsonPagingInfo)</span>
@@ -6,21 +6,21 @@
 <table class="table table-bordered table-striped">
     <thead>
         <tr class="gridview-list-header">
-            <th>@(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().Id))</th>
-            <th class="sortable" data-sort="CompanyName">@(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().CompanyName))</th>
-            <th class="sortable" data-sort="ContactTitle">@(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().ContactTitle))</th>
-            <th class="sortable" data-sort="Country">@(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().Country))</th>
-            <th class="sortable" data-sort="City">@(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().City))</th>
-            <th>@(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().Address))</th>
-            <th>@(Html.DisplayNameFor(x => x.Customers.FirstOrDefault().Phone))</th>
-            <th class="sortable" data-sort="Founded">@Html.DisplayNameFor(x=> x.Customers.FirstOrDefault().Founded)</th>
+            <th>@(Html.DisplayNameFor(x => x.Data.FirstOrDefault().Id))</th>
+            <th class="sortable" data-sort="CompanyName">@(Html.DisplayNameFor(x => x.Data.FirstOrDefault().CompanyName))</th>
+            <th class="sortable" data-sort="ContactTitle">@(Html.DisplayNameFor(x => x.Data.FirstOrDefault().ContactTitle))</th>
+            <th class="sortable" data-sort="Country">@(Html.DisplayNameFor(x => x.Data.FirstOrDefault().Country))</th>
+            <th class="sortable" data-sort="City">@(Html.DisplayNameFor(x => x.Data.FirstOrDefault().City))</th>
+            <th>@(Html.DisplayNameFor(x => x.Data.FirstOrDefault().Address))</th>
+            <th>@(Html.DisplayNameFor(x => x.Data.FirstOrDefault().Phone))</th>
+            <th class="sortable" data-sort="Founded">@Html.DisplayNameFor(x=> x.Data.FirstOrDefault().Founded)</th>
         </tr>
     </thead>
 
     <tbody id="CustomersTable" class="gridview-list-items">
-        @if (Model.Customers.Any())
+        @if (Model.Data.Any())
         {
-            foreach (var c in Model.Customers)
+            foreach (var c in Model.Data)
             {
                 <tr>
                     <td class="value">@c.Id</td>

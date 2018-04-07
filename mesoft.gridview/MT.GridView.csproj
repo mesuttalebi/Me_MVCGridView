@@ -21,6 +21,7 @@
     <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -131,7 +132,6 @@
     <Compile Include="HtmlHelpers\GridviewHelper.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Customer.cs" />
-    <Compile Include="Models\CustomersViewModel.cs" />
     <Compile Include="Models\ExpresssionBuilder.cs" />
     <Compile Include="Models\GridviewModel.cs" />
     <Compile Include="Models\GridViewModelProvider.cs" />

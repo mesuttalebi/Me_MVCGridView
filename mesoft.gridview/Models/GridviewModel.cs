@@ -1,5 +1,5 @@
 ﻿/*
-    megridview v0.4.0
+    megridview v0.4.1
     Developed By Mesut Talebi (mesut.talebi@yahoo.com)
     Open Source And no licence :) free to use 
 */
@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Web.Helpers;
 
 namespace MT.GridView.Models
 {
@@ -53,6 +54,14 @@ namespace MT.GridView.Models
         public FilterConjunction Conjunction { get; set; }
     }
 
+    public class GridIndexViewModel<T> where T : class
+    {
+        public IEnumerable<T> Data { get; set; }
+
+        public string JsonPagingInfo => Json.Encode(PagingInfo);
+
+        public PagingInfo PagingInfo { private get; set; }
+    }
 
     /********* ENUMS *************/
     public enum SortDirection
